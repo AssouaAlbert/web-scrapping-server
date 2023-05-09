@@ -2,6 +2,8 @@ const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose");
 
+const getGamesList = require("./getGamesList");
+
 const date = require("./getDate");
 const fileName = `_${date}`;
 const filePath = path.resolve(__dirname, `./data/_${date}.json`);
@@ -15,13 +17,13 @@ const checkDailayDb = async () => {
         if (err) {
           throw new Error(err);
         } else if (collectionInfo) {
-            return collectionInfo
+          return collectionInfo;
         } else {
           throw new Error("There Collection does not exist");
         }
       });
-    if(!collectExist){
-
+    if (!collectExist) {
+    //   const gamesList = await getGamesList();
     }
   } catch (error) {
     console.log(
