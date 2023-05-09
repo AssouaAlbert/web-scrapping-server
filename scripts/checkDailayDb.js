@@ -6,7 +6,7 @@ const getGamesList = require("./getGamesList");
 
 const date = require("./getDate");
 const fileName = `_${date}`;
-const filePath = path.resolve(__dirname, `./data/_${date}.json`);
+const filePath = path.resolve(__dirname, `../data/${fileName}.json`);
 
 const checkDailayDb = async () => {
   try {
@@ -23,7 +23,24 @@ const checkDailayDb = async () => {
         }
       });
     if (!collectExist) {
-    //   const gamesList = await getGamesList();
+      if (fs.existsSync(filePath)) {
+        console.log(`${filePath} exists`);
+      } else {
+        //   const gamesList = await getGamesList();
+      }
+      const data = await fs.writeFile(
+        filePath,
+        `${JSON.stringify(gamesList)}`,
+        (err) => {
+          if (err) {
+            console.error(err);
+          }
+        }
+      );
+      console.log(
+        "🚀 ~ file: checkDailayDb.js:36 ~ checkDailayDb ~ data:",
+        data
+      );
     }
   } catch (error) {
     console.log(

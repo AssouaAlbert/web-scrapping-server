@@ -4,7 +4,7 @@ const scrollPageGetLinks = require("./scrollPageGetLinks.js");
 const checkIfLeague = require("./checkIfLeague.js");
 
 const getGamesList = async () => {
-  const browser = await puppeteer.launch({ headless: false, dumpio: false });
+  const browser = await puppeteer.launch({ headless: true, dumpio: false });
   const page = await browser.newPage();
   await page.setViewport({
     width: 1200,
@@ -16,7 +16,7 @@ const getGamesList = async () => {
     .then(async () => {
       return await scrollPageGetLinks(page);
     });
-  await checkIfLeague(page, gamesList);
+  return await checkIfLeague(page, gamesList);
 };
 
 module.exports = getGamesList;
