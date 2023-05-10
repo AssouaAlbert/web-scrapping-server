@@ -3,6 +3,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 
 const getGamesList = require("./getGamesList");
+const insertToDB = require("./db/insertData");
 
 const date = require("./getDate");
 const fileName = `_${date}`;
@@ -24,31 +25,32 @@ const checkDailayDb = async () => {
       });
     if (!collectExist) {
       if (fs.existsSync(filePath)) {
-        console.log(`${filePath} exists`);
-      } else {
-        //   const gamesList = await getGamesList();
-      }
-      const data = await fs.writeFile(
-        filePath,
-        `${JSON.stringify(gamesList)}`,
-        (err) => {
-          if (err) {
-            console.error(err);
-          }
+        try {
+          const data = Object.values(require(filePath));
+          await insertToDB(data);
+        } catch (error) {
+          const gamesList = await getGamesList();
+          await fs.writeFile(
+            filePath,
+            `${JSON.stringify(gamesList)}`,
+            (err) => {
+              if (err) {
+                console.error(err);
+              }
+            }
+          );
+          const data = Object.values(gamesList);
+          await insertToDB(data);
         }
-      );
-      console.log(
-        "🚀 ~ file: checkDailayDb.js:36 ~ checkDailayDb ~ data:",
-        data
-      );
+      } else {
+      }
     }
   } catch (error) {
     console.log(
       "🚀 ~ file: checkDailayDb.js:22 ~ checkDailayDb ~ error:",
       error
     );
-
-    // setTimeout(checkDailayDb, timeout);
+    setTimeout(checkDailayDb, timeout);
   }
 };
 

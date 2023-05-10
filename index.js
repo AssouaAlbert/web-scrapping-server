@@ -6,9 +6,14 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const cron = require('node-cron');
+const fs = require('fs');
+
 
 /* SCRIPTS */
 const checkDailayDb = require("./scripts/checkDailayDb");
+/* ERROR */
+const filename = 'example.txt';
 
 /**CONFIGURATIONS */
 dotenv.config();
@@ -33,7 +38,9 @@ mongoose
   .then(async () => {
     /* START SERVER*/
     app.listen(PORT, () => console.log("Server is running on port %d", PORT));
-    checkDailayDb();
+    cron.schedule('0 0,12 * * *', () => {
+        checkDailayDb();
+      });
   })
   .catch((error) => {
     console.log(error.message);

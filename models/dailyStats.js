@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const date = require("./getDate")
+const date = require("../scripts/getDate")
 
 const DateStatsSchema = new mongoose.Schema(
   {
@@ -55,4 +55,4 @@ const DateStatsSchema = new mongoose.Schema(
 
 const DailyStats = mongoose.model(`_${date}`, DateStatsSchema);
 
-export default DailyStats;
+module.exports = DailyStats;
