@@ -8,10 +8,11 @@ const insertToDB = require("./db/insertData");
 const date = require("./getDate");
 const fileName = `_${date}`;
 const filePath = path.resolve(__dirname, `../data/${fileName}.json`);
+const time = 30 * 60 * 1000;
 
 const checkDailayDb = async () => {
   try {
-    const db = mongoose.connection.db;
+    const db = await mongoose.connection.db;
     const collectExist = await db
       .listCollections({ name: fileName })
       .next((err, collectionInfo) => {
@@ -23,34 +24,40 @@ const checkDailayDb = async () => {
           throw new Error("There Collection does not exist");
         }
       });
-    if (!collectExist) {
-      if (fs.existsSync(filePath)) {
-        try {
-          const data = Object.values(require(filePath));
-          await insertToDB(data);
-        } catch (error) {
-          const gamesList = await getGamesList();
-          await fs.writeFile(
-            filePath,
-            `${JSON.stringify(gamesList)}`,
-            (err) => {
-              if (err) {
-                console.error(err);
-              }
-            }
-          );
-          const data = Object.values(gamesList);
-          await insertToDB(data);
+
+    const collectionEmpty = await db
+      .collection(`${fileName}`)
+      .countDocuments({}, (err, count) => {
+        if (err) {
+          console.error(err);
+        } else if (count === 0) {
+          return true;
+        } else {
+          console.log(`Collection contains ${count} documents`);
+          return false;
         }
-      } else {
+      });
+    if (!collectExist || !collectionEmpty) {
+      try {
+        const data = Object.values(require(filePath));
+        await insertToDB(data);
+      } catch (error) {
+        const gamesList = await getGamesList();
+        const data = Object.values(gamesList);
+        await insertToDB(data);
+        await fs.writeFile(filePath, `${JSON.stringify(gamesList)}`, (err) => {
+          if (err) {
+            console.error(err);
+          }
+        });
+        message = { subject: "File Upload", message: "Data is available online." }
+        await mail(message, fileName);
       }
     }
   } catch (error) {
-    console.log(
-      "🚀 ~ file: checkDailayDb.js:22 ~ checkDailayDb ~ error:",
-      error
-    );
-    setTimeout(checkDailayDb, timeout);
+    message = { subject: "file: checkDailayDb.js", message: error.message };
+    mail(message);
+    setTimeout(checkDailayDb, time);
   }
 };
 

@@ -16,7 +16,9 @@ const getGamesList = async () => {
     .then(async () => {
       return await scrollPageGetLinks(page);
     });
-  return await checkIfLeague(page, gamesList);
+  gamesList = await checkIfLeague(page, gamesList);
+  browser.close();
+  return gamesList;
 };
 
 module.exports = getGamesList;

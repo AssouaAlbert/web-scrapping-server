@@ -6,14 +6,14 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const helmet = require("helmet");
 const morgan = require("morgan");
-const cron = require('node-cron');
-const fs = require('fs');
-
+const cron = require("node-cron");
+const fs = require("fs");
 
 /* SCRIPTS */
 const checkDailayDb = require("./scripts/checkDailayDb");
+const mail = require("./scripts/sendEmail");
 /* ERROR */
-const filename = 'example.txt';
+const filename = "example.txt";
 
 /**CONFIGURATIONS */
 dotenv.config();
@@ -28,7 +28,8 @@ app.use(cors());
 
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 9000;
-
+/* SCRAPPING TIME*/
+// const time = 12 * 60 * 60 * 1000;
 /* CONNNECT TO DATABASE */
 mongoose
   .connect(process.env.MONGO_DB, {
@@ -38,10 +39,13 @@ mongoose
   .then(async () => {
     /* START SERVER*/
     app.listen(PORT, () => console.log("Server is running on port %d", PORT));
-    cron.schedule('0 0,12 * * *', () => {
-        checkDailayDb();
-      });
+    // checkDailayDb();
+    // setInterval(checkDailayDb, time);
+    cron.schedule("48 21 * * *", () => {
+      checkDailayDb();
+    });
   })
   .catch((error) => {
-    console.log(error.message);
+    message = { subject: "file: index.js:49", message: error.message }
+    mail(message);
   });
