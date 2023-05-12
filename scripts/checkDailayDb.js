@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 
 const getGamesList = require("./getGamesList");
 const insertToDB = require("./db/insertData");
+const mail = require("./sendEmail");
 
 const date = require("./getDate");
 const fileName = `_${date}`;
@@ -41,6 +42,11 @@ const checkDailayDb = async () => {
       try {
         const data = Object.values(require(filePath));
         await insertToDB(data);
+        message = {
+          subject: "File Upload",
+          message: "Data is available online.",
+        };
+        mail(message, fileName);
       } catch (error) {
         const gamesList = await getGamesList();
         const data = Object.values(gamesList);
@@ -50,8 +56,11 @@ const checkDailayDb = async () => {
             console.error(err);
           }
         });
-        message = { subject: "File Upload", message: "Data is available online." }
-        await mail(message, fileName);
+        message = {
+          subject: "File Created & Upload",
+          message: "Data is available online.",
+        };
+        mail(message, fileName);
       }
     }
   } catch (error) {

@@ -12,6 +12,7 @@ const fs = require("fs");
 /* SCRIPTS */
 const checkDailayDb = require("./scripts/checkDailayDb");
 const mail = require("./scripts/sendEmail");
+const router = require("./routes/index");
 /* ERROR */
 const filename = "example.txt";
 
@@ -30,6 +31,10 @@ app.use(cors());
 const PORT = process.env.PORT || 9000;
 /* SCRAPPING TIME*/
 // const time = 12 * 60 * 60 * 1000;
+
+/* CONNNECT TO DATABASE */
+app.use("/", router);
+
 /* CONNNECT TO DATABASE */
 mongoose
   .connect(process.env.MONGO_DB, {
@@ -41,11 +46,11 @@ mongoose
     app.listen(PORT, () => console.log("Server is running on port %d", PORT));
     // checkDailayDb();
     // setInterval(checkDailayDb, time);
-    cron.schedule("48 21 * * *", () => {
+    cron.schedule("35 0 * * *", () => {
       checkDailayDb();
     });
   })
   .catch((error) => {
-    message = { subject: "file: index.js:49", message: error.message }
+    message = { subject: "file: index.js:49", message: error.message };
     mail(message);
   });
