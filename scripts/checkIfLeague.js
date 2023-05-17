@@ -14,7 +14,13 @@ const checkIfLeague = async (page, gamesList) => {
           if (table) {
             res((gamesList[key] = { ...gamesList[key], league: true }));
           } else {
-            res((gamesList[key] = { ...gamesList[key], league: false }));
+            const homeName = document.getElementById(
+              "match-detail_team-name_home-link"
+            ).lastChild?.textContent;
+            const awayName = document.getElementById(
+              "match-detail_team-name_away-link"
+            ).lastChild?.textContent;
+            res((gamesList[key] = { ...gamesList[key], league: false, home: {title: homeName,}, away:{title: awayName,} }));
           }
         });
       },

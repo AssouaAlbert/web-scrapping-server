@@ -3,7 +3,7 @@ const getH2HStats = async (page, gamesList) => {
   const gamesListArray = Object.entries(gamesList);
   for (let i = 0; i < gamesListArray.length; i++) {
     const [key, value] = gamesListArray[i];
-    if (value.league) {
+    // if (value.league) {
       await page.goto(`${value.link}/h2h`, {
         waitUntil: "domcontentloaded",
       });
@@ -94,7 +94,7 @@ const getH2HStats = async (page, gamesList) => {
         );
       }
       gamesList[key] = results;
-    }
+    // }
   }
 
   return (gamesList = await getTeamDiff(gamesList));
