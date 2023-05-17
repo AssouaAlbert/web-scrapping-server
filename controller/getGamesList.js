@@ -1,5 +1,4 @@
 const DailyStats = require("../models/dailyStats");
-console.log("🚀 ~ file: getGamesList.js:2 ~ DailyStats:", DailyStats);
 const getGamesList = async (req, res) => {
   try {
     const gamesList = await DailyStats.find();
