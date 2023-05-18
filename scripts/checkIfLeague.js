@@ -11,8 +11,9 @@ const checkIfLeague = async (page, gamesList) => {
       async ([key, gamesList]) => {
         return await new Promise((res, rej) => {
           const table = document.getElementById("table");
+          const category = document.getElementById("category-header__category").textContent;
           if (table) {
-            res((gamesList[key] = { ...gamesList[key], league: true }));
+            res((gamesList[key] = { ...gamesList[key], league: true, category }));
           } else {
             const homeName = document.getElementById(
               "match-detail_team-name_home-link"
@@ -20,7 +21,7 @@ const checkIfLeague = async (page, gamesList) => {
             const awayName = document.getElementById(
               "match-detail_team-name_away-link"
             ).lastChild?.textContent;
-            res((gamesList[key] = { ...gamesList[key], league: false, home: {title: homeName,}, away:{title: awayName,} }));
+            res((gamesList[key] = { ...gamesList[key], league: false, category, home: {title: homeName,}, away:{title: awayName,} }));
           }
         });
       },

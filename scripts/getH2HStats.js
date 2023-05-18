@@ -47,7 +47,6 @@ const getH2HStats = async (page, gamesList) => {
         [key, gamesList]
       );
       gamesList[key] = results;
-      console.log(value.link);
       if (await page.$("#home__tab")) {
         await page.click("#home__tab");
         results = await page.evaluate(
