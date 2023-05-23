@@ -11,9 +11,21 @@ const checkIfLeague = async (page, gamesList) => {
       async ([key, gamesList]) => {
         return await new Promise((res, rej) => {
           const table = document.getElementById("table");
-          const category = document.getElementById("category-header__category").textContent;
+          const category = document.getElementById(
+            "category-header__category"
+          ).textContent;
+          const stage = document.getElementById(
+            "category-header__stage"
+          ).textContent;
           if (table) {
-            res((gamesList[key] = { ...gamesList[key], league: true, category }));
+            res(
+              (gamesList[key] = {
+                ...gamesList[key],
+                league: true,
+                category,
+                stage,
+              })
+            );
           } else {
             const homeName = document.getElementById(
               "match-detail_team-name_home-link"
@@ -21,7 +33,16 @@ const checkIfLeague = async (page, gamesList) => {
             const awayName = document.getElementById(
               "match-detail_team-name_away-link"
             ).lastChild?.textContent;
-            res((gamesList[key] = { ...gamesList[key], league: false, category, home: {title: homeName,}, away:{title: awayName,} }));
+            res(
+              (gamesList[key] = {
+                ...gamesList[key],
+                league: false,
+                stage,
+                category,
+                home: { title: homeName },
+                away: { title: awayName },
+              })
+            );
           }
         });
       },
@@ -29,7 +50,7 @@ const checkIfLeague = async (page, gamesList) => {
     );
     gamesList[key] = results;
   }
-  return gamesList = await getGamesData(page, gamesList);
+  return (gamesList = await getGamesData(page, gamesList));
 };
 
 module.exports = checkIfLeague;

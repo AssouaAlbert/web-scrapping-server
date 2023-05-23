@@ -5,6 +5,7 @@ const DateStatsSchema = new mongoose.Schema(
   {
     link: String,
     league: Boolean,
+    category: String,
     home: {
       title: String,
       position: Number,
