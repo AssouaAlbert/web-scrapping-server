@@ -1,47 +1,31 @@
 const scrollPageGetLinks = async (page) => {
-    return await page.evaluate(async () => {
-     return await new Promise((res, reg) => {
-        let totalHeight = 0;
-        let distance = 200;
-        const gamesLinks = {};
-        const config = { childList: true };
-        const list = document.querySelector(
-          '[data-test-id="virtuoso-item-list"]'
-        );
-      //   /*********************** */
-        const callback = (mutationList, observer) => {
-          for (const mutation of mutationList) {
-            if (mutation.type === "childList") {
-              getLinks();
-            }
+  return await page.evaluate(async () => {
+    return await new Promise((res, reg) => {
+      const gamesLinks = {};
+      const gamesList = document.querySelectorAll(
+        "#content-center > div > div"
+      );
+      gamesList.forEach((element) => {
+        if (element?.classList?.length > 1) {
+          const url = /livescores.com/i;
+          const query = /\/\?tz=-4/i;
+          let link = element.querySelector("a").href;
+          link = link.replace(url, "livescore.com/en");
+          link = link.replace(query, "");
+          const matches = link.match(/\/([^/]+)\/[^/]+$/);
+          if (matches) {
+            const key = matches[1];
+            gamesLinks[`_${key}`] = { link };
+          } else {
+            const key =
+              Math.floor(Math.random() * (237283 - 10000 + 1)) - 10000;
+            gamesLinks[`_${key}`] = { link };
           }
-        };
-        const getLinks = () => {
-          const listView = document.querySelectorAll('[id$="__match-row"]');
-          if (listView) {
-            for (i = 0; i < listView.length; i++) {
-              link = listView[i]?.firstChild.href;
-              gamesLinks[`_${listView[i].id}`] = {link};
-            }
-            return;
-          }
-          return;
-        };
-        const observer = new MutationObserver(callback);
-        observer.observe(list, config);
-        getLinks();
-      //   /*************** */
-        let timer = setInterval(() => {
-          let scrollHeight = document.body.scrollHeight;
-          window.scrollBy(0, distance);
-          totalHeight += distance;
-          if (totalHeight >= scrollHeight - window.innerHeight) {
-            clearInterval(timer);
-            res(gamesLinks);
-          }
-        }, 500);
+        }
       });
+      res(gamesLinks);
     });
-  };
-  
-  module.exports = scrollPageGetLinks;
+  });
+};
+
+module.exports = scrollPageGetLinks;

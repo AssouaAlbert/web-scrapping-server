@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const getGamesList = require("./getGamesList");
 const insertToDB = require("./db/insertData");
 const mail = require("./sendEmail");
+const deleteOldFiles = require("./deleteOldFiles")
 
 const date = require("./getDate");
 const fileName = `_${date}`;
@@ -12,6 +13,7 @@ const filePath = path.resolve(__dirname, `../data/${fileName}.json`);
 const time = 30 * 60 * 1000;
 
 const checkDailayDb = async () => {
+  deleteOldFiles();
   try {
     const db = await mongoose.connection.db;
     const collectExist = await db

@@ -4,17 +4,18 @@ const scrollPageGetLinks = require("./scrollPageGetLinks.js");
 const checkIfLeague = require("./checkIfLeague.js");
 
 const getGamesList = async () => {
-  const browser = await puppeteer.launch({ headless: true, dumpio: false });
+  const browser = await puppeteer.launch({ headless: false, dumpio: false });
   const page = await browser.newPage();
   await page.setViewport({
     width: 1200,
     height: 800,
   });
-  await page.goto("https://www.livescore.com/en/");
+  await page.goto("https://www.livescores.com/?tz=-4");
   let gamesList = await page
-    .waitForSelector('[data-test-id="virtuoso-item-list"]')
+    .waitForSelector('#content-center')
     .then(async () => {
-      return await scrollPageGetLinks(page);
+      const gamesLinks = await scrollPageGetLinks(page);
+      return gamesLinks
     });
   gamesList = await checkIfLeague(page, gamesList);
   browser.close();
