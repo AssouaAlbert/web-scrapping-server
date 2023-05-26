@@ -16,7 +16,7 @@ async function mail(message, fileName = "") {
       if (err) {
         console.log(
           "🚀 ~ file: sendEmail.js:21 ~ transporter.verify ~ err.message:\n",
-          err.message
+          err
         );
         return false;
       } else {

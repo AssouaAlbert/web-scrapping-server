@@ -4,6 +4,8 @@ const date = require("../scripts/getDate")
 const DateStatsSchema = new mongoose.Schema(
   {
     link: String,
+    country: String,
+    stage: String,
     league: Boolean,
     home: {
       title: String,
